@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mi carrito | Neo Zoo</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <!-- Barra superior -->
+    <div class="topbar">
+        Todo lo que tu mascota necesita, en un solo lugar
+    </div>
+
+
+    <!-- Encabezado y navegación -->
+    <header class="header">
+
+        <nav class="nav">
+
+            <a class="brand" href="index.html">
+                <img src="img/logo-portada.png" alt="Neo Zoo">
+            </a>
+
+            <div class="navlinks">
+                <a href="index.html">Seguir comprando</a>
+            </div>
+
+            <a class="cart-link" href="carrito.html">
+                🛒 Carrito
+                <span id="cart-count">0</span>
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- Contenido principal -->
+    <main>
+
+        <div class="page-title">
+
+            <span class="eyebrow">Tu compra</span>
+
+            <h1>Carrito de compras</h1>
+
+            <p class="description">
+                Revisá tus productos antes de enviar el pedido.
+            </p>
+
+        </div>
+
+        <!-- Aquí JavaScript muestra los productos del carrito -->
+        <div id="cart-content"></div>
+
+    </main>
+
+
+    <!-- Pie de página -->
+    <footer class="footer">
+
+        <div class="footer-inner">
+
+            <strong>Neo Zoo · Pet shop Rosario</strong>
+
+            <a href="https://www.instagram.com/neozoo_rosario/">
+                Instagram
+            </a>
+
+        </div>
+
+    </footer>
+
+
+    <!-- Archivos JavaScript -->
+    <script src="js/products.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
