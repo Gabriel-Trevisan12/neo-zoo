@@ -3,11 +3,67 @@
    1. CONFIGURACIÓN Y DATOS
 ========================================= */
 
+
+/* =========================================
+   1. CONFIGURACIÓN Y DATOS
+========================================= */
+
+const STORAGE_KEY = "neozoo-products";
+
 // Catálogo de productos
-let PRODUCTS = window.NEOZOO_PRODUCTS || [];
+let PRODUCTS = [];
+
+// Cargar catálogo desde LocalStorage o JSON
+async function getProducts() {
+    try {
+        const savedProducts = localStorage.getItem(STORAGE_KEY);
+
+        let data;
+
+        if (savedProducts !== null) {
+            data = JSON.parse(savedProducts);
+        } else {
+            const response = await fetch("data/products.json");
+
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+
+            data = await response.json();
+
+            if (!Array.isArray(data)) {
+                throw new Error("El catálogo no tiene un formato válido");
+            }
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        if (!Array.isArray(data)) {
+            throw new Error("El catálogo no tiene un formato válido");
+        }
+
+        return data.map(product => ({
+            id: String(product.id),
+            name: product.name || product.nombre || "Producto sin nombre",
+            category: product.category || product.categoria || "Otros",
+            price: product.price ?? product.precio ?? null,
+            image: product.image || product.imagen_url || "",
+            description: product.description || product.descripcion || "",
+            brand: product.brand || product.marca || "Sin marca",
+            stock: product.stock ?? 0,
+            featured: product.featured ?? product.destacado ?? false,
+            pet: product.pet || product.mascota || "Otros",
+            sku: product.sku || ""
+        }));
+
+    } catch (error) {
+        console.error("Error al cargar el catálogo:", error);
+        return [];
+    }
+}
 
 // Número de WhatsApp del negocio
-const WHATSAPP_NUMBER = "5493413539527";
+const WHATSAPP_NUMBER = "5493364609342";
 
 // Clave del carrito en LocalStorage
 const CART_KEY = "neozoo-cart";
@@ -31,6 +87,10 @@ function getImageUrl(image) {
     if (!image) return "";
 
     if (image.startsWith("http")) {
+        return image;
+    }
+
+    if (image.startsWith("img/")) {
         return image;
     }
 
@@ -74,7 +134,12 @@ function updateCount() {
         return sum + item.quantity;
     }, 0);
 
-    el.textContent = total;
+    if (el.textContent !== String(total)) {
+        el.textContent = total;
+        el.classList.remove("bump");
+        void el.offsetWidth; // reinicia la animación
+        el.classList.add("bump");
+    }
 }
 
 
@@ -346,9 +411,11 @@ function initHome() {
         addToCart(button.dataset.add);
 
         button.textContent = "¡Agregado!";
+        button.classList.add("ok");
 
         setTimeout(() => {
             button.textContent = "Agregar";
+            button.classList.remove("ok");
         }, 900);
 
     });
@@ -766,27 +833,27 @@ Total estimado: ${totalText}
    8. INICIALIZACIÓN DE LA APLICACIÓN
 ========================================= */
 
+/* =========================================
+   8. INICIALIZACIÓN DE LA APLICACIÓN
+========================================= */
+
 document.addEventListener("DOMContentLoaded", async () => {
 
     updateCount();
 
-    try {
-        const response = await fetch("data/products.json");
+    // Cargar catálogo desde products.json
+    PRODUCTS = await getProducts();
 
-        if (!response.ok) {
-            throw new Error("No se pudo cargar el catálogo");
-        }
+    // Sombra del header al hacer scroll
+    const header = document.querySelector(".header");
 
-        PRODUCTS = await response.json();
+    window.addEventListener("scroll", () => {
 
-        console.log("Catálogo local cargado:", PRODUCTS);
-        console.log("Cantidad de productos:", PRODUCTS.length);
+        header?.classList.toggle("scrolled", window.scrollY > 8);
 
-    } catch (error) {
-        console.error("Error al cargar productos:", error);
-        PRODUCTS = [];
-    }
+    }, { passive: true });
 
+    // Inicializar páginas
     initHome();
     initProduct();
     initCart();

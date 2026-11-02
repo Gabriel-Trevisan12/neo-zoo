@@ -693,3 +693,1360 @@ h1 {
         font-size: 13px;
     }
 }
+
+
+/* =========================================
+   12. MEJORAS VISUALES Y ANIMACIONES
+========================================= */
+
+:root {
+    --ease: cubic-bezier(.2, .7, .2, 1);
+    --shadow-card: 0 14px 32px rgba(23, 75, 49, .12);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+}
+
+/* Header */
+
+.header {
+    transition: box-shadow .3s var(--ease);
+}
+
+.header.scrolled {
+    box-shadow: 0 8px 22px rgba(23, 75, 49, .08);
+}
+
+.navlinks a {
+    position: relative;
+    transition: color .2s;
+}
+
+.navlinks a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--green);
+    transition: width .3s var(--ease);
+}
+
+.navlinks a:hover::after {
+    width: 100%;
+}
+
+.cart-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform .2s var(--ease), background .2s;
+}
+
+.cart-link:hover {
+    background: var(--green-dark);
+    transform: translateY(-2px);
+}
+
+#cart-count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--green);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+#cart-count.bump {
+    animation: rebote .45s var(--ease);
+}
+
+@keyframes rebote {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+/* Entradas */
+
+@keyframes subir {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* "backwards" evita que la animación bloquee el hover después de terminar */
+
+/* Hero */
+
+.hero {
+    position: relative;
+    isolation: isolate;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    right: -90px;
+    top: -90px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #d9efb2 0%, transparent 70%);
+    z-index: -1;
+}
+
+.hero-copy {
+    animation: subir .8s var(--ease) backwards;
+}
+
+.hero img {
+    animation: subir .8s var(--ease) .15s backwards;
+}
+
+/* Botones */
+
+.primary {
+    transition: background .2s, transform .2s var(--ease), box-shadow .2s;
+}
+
+.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(36, 107, 69, .25);
+}
+
+.primary:active,
+.small-btn:active,
+.qty button:active,
+.cart-controls button:active {
+    transform: scale(.96);
+}
+
+.filter {
+    transition: background .2s, color .2s, border-color .2s, transform .15s;
+}
+
+.filter:active {
+    transform: scale(.96);
+}
+
+.small-btn {
+    transition: background .2s, color .2s, opacity .2s, transform .15s;
+}
+
+.small-btn.add.ok {
+    background: #2f8a5a;
+    border-color: #2f8a5a;
+}
+
+.qty button,
+.cart-controls button {
+    transition: background .2s, transform .15s;
+}
+
+.qty button:hover,
+.cart-controls button:hover {
+    background: var(--cream);
+}
+
+/* Tarjetas de producto */
+
+.product-card {
+    animation: aparecer .6s var(--ease) backwards;
+    animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+.product-card:hover {
+    box-shadow: var(--shadow-card);
+}
+
+.product-image img {
+    transition: transform .5s var(--ease);
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.06);
+}
+
+/* Carrito */
+
+.cart-row {
+    animation: aparecer .4s var(--ease) backwards;
+}
+
+.summary {
+    position: sticky;
+    top: 100px;
+}
+
+/* Preferencias de accesibilidad: sin animaciones si el usuario las desactiva */
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+@media (max-width: 850px) {
+    .summary {
+        position: static;
+    }
+}
+
+/* Franja de beneficios */
+
+.beneficios {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.beneficios div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    animation: aparecer .6s var(--ease) backwards;
+}
+
+.beneficios div:nth-child(2) { animation-delay: .1s; }
+.beneficios div:nth-child(3) { animation-delay: .2s; }
+
+.beneficios strong {
+    color: var(--green);
+    font-size: 15px;
+}
+
+.beneficios span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+@media (max-width: 850px) {
+    .beneficios { grid-template-columns: 1fr; }
+}
+
+/* Ajuste del header en celulares: evita desborde horizontal */
+@media (max-width: 560px) {
+    .nav {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        row-gap: 10px;
+    }
+
+    .navlinks {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+/* =========================================
+   13. RENOVACIÓN VISUAL NEO ZOO
+========================================= */
+
+:root {
+    --green: #245b40;
+    --green-dark: #173e2c;
+    --lime: #e5efcf;
+    --cream: #faf9f5;
+    --ink: #202b24;
+    --muted: #788078;
+    --line: #eae9e2;
+    --accent: #e99a55;
+}
+
+/* Fondo general */
+
+body {
+    background: var(--cream);
+    color: var(--ink);
+}
+
+/* Barra superior */
+
+.topbar {
+    background: var(--green-dark);
+    padding: 11px 16px;
+    font-size: 12px;
+    letter-spacing: .4px;
+}
+
+/* Navegación */
+
+.header {
+    background: rgba(255, 255, 255, .96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0, 0, 0, .04);
+}
+
+.nav {
+    min-height: 78px;
+}
+
+.brand img {
+    width: 155px;
+    transition: transform .25s ease;
+}
+
+.brand:hover img {
+    transform: scale(1.04);
+}
+
+.navlinks {
+    gap: 32px;
+    color: #48554c;
+}
+
+.navlinks a {
+    transition: color .2s ease;
+}
+
+.cart-link {
+    padding: 12px 19px;
+    box-shadow: 0 5px 14px rgba(36, 91, 64, .15);
+}
+
+/* Portada principal */
+
+.hero {
+    background:
+        radial-gradient(circle at 85% 20%, #f4dfc4 0%, transparent 28%),
+        linear-gradient(115deg, #edf3e5, #f8f5e9);
+    min-height: 370px;
+    padding: 58px;
+    border-radius: 28px;
+    box-shadow: 0 15px 40px rgba(40, 65, 44, .06);
+}
+
+.hero-copy {
+    max-width: 560px;
+}
+
+.hero .eyebrow {
+    display: inline-block;
+    background: rgba(36, 91, 64, .09);
+    padding: 8px 13px;
+    border-radius: 999px;
+    letter-spacing: 1.2px;
+}
+
+.hero h1 {
+    font-size: clamp(38px, 5vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -2.5px;
+    max-width: 540px;
+}
+
+.hero p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #68746b;
+}
+
+.hero img {
+    width: min(40%, 390px);
+    max-height: 280px;
+    filter: drop-shadow(0 15px 15px rgba(40, 50, 35, .10));
+}
+
+/* Botón principal */
+
+.primary {
+    background: var(--green);
+    border-radius: 999px;
+    padding: 15px 25px;
+    font-size: 14px;
+    box-shadow: 0 7px 18px rgba(36, 91, 64, .15);
+}
+
+/* Beneficios */
+
+.beneficios {
+    gap: 18px;
+    margin-top: 24px;
+}
+
+.beneficios div {
+    padding: 23px;
+    border-radius: 18px;
+    border-color: #eeede6;
+    box-shadow: 0 5px 20px rgba(30, 50, 35, .025);
+}
+
+.beneficios strong {
+    font-size: 14px;
+}
+
+.beneficios span {
+    line-height: 1.7;
+}
+
+/* Títulos de sección */
+
+.section-head {
+    margin-top: 58px;
+    margin-bottom: 23px;
+}
+
+.section-head h2 {
+    font-size: 32px;
+    letter-spacing: -1px;
+}
+
+.section-head p {
+    font-size: 15px;
+}
+
+/* Buscador */
+
+.search-box input {
+    max-width: 520px;
+    padding: 15px 19px;
+    border-radius: 999px;
+    background: #fff;
+    border-color: #e8e8df;
+}
+
+/* Filtros */
+
+.filter {
+    padding: 10px 17px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Tarjetas */
+
+.grid {
+    gap: 22px;
+}
+
+.product-card {
+    border-radius: 20px;
+    border-color: #eeede7;
+    box-shadow: 0 4px 18px rgba(30, 50, 35, .025);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 35px rgba(30, 50, 35, .10);
+}
+
+.product-image {
+    height: 215px;
+    background: #f5f5ef;
+    padding: 22px;
+}
+
+.product-info {
+    padding: 18px;
+}
+
+.product-info h3 {
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.price {
+    color: var(--green-dark);
+    font-size: 20px;
+}
+
+/* Botones de productos */
+
+.small-btn {
+    border-radius: 999px;
+    padding: 11px 9px;
+    font-size: 12px;
+}
+
+.small-btn.add {
+    box-shadow: 0 4px 10px rgba(36, 91, 64, .12);
+}
+
+/* Pie de página */
+
+.footer {
+    background: #173e2c;
+    padding: 45px 22px;
+}
+
+.footer-inner {
+    align-items: center;
+}
+
+.footer a {
+    transition: color .2s ease;
+}
+
+.footer a:hover {
+    color: #f0b77e;
+}
+
+/* Responsive */
+
+@media (max-width: 850px) {
+    .hero {
+        padding: 35px;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+    }
+
+    .product-image {
+        height: 190px;
+    }
+}
+
+@media (max-width: 560px) {
+    .hero {
+        padding: 25px;
+        border-radius: 20px;
+    }
+
+    .hero h1 {
+        font-size: 35px;
+        letter-spacing: -1.5px;
+    }
+
+    .hero img {
+        width: 30%;
+    }
+
+    .section-head h2 {
+        font-size: 26px;
+    }
+
+    .product-image {
+        height: 150px;
+    }
+
+    .nav {
+        min-height: auto;
+    }
+}
+
+/* =========================================
+   14. HERO DESTACADO - NEO ZOO
+========================================= */
+
+.hero {
+    background: linear-gradient(120deg, #173e2c 0%, #245b40 65%, #34764e 100%);
+    min-height: 440px;
+    padding: 65px;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 35px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(23, 62, 44, .20);
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    right: -100px;
+    top: -100px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .07);
+    z-index: 0;
+}
+
+.hero-copy {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+}
+
+.hero .eyebrow {
+    color: #f3bd83;
+    background: rgba(255, 255, 255, .12);
+    padding: 9px 15px;
+    border-radius: 999px;
+}
+
+.hero h1 {
+    color: #fff;
+    font-size: clamp(42px, 5vw, 64px);
+    line-height: 1.03;
+    letter-spacing: -2.5px;
+}
+
+.hero p {
+    color: #d8e7dc;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.hero .primary {
+    background: #f0a45f;
+    color: #26382c;
+    padding: 16px 27px;
+    font-weight: 800;
+    border-radius: 999px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, .15);
+}
+
+.hero .primary:hover {
+    background: #ffc184;
+}
+
+.hero img {
+    position: relative;
+    z-index: 1;
+    width: min(44%, 440px);
+    max-height: 340px;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 20px rgba(0, 0, 0, .20));
+}
+
+/* Adaptación para celular */
+
+@media (max-width: 560px) {
+    .hero {
+        min-height: 0;
+        padding: 32px 25px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .hero h1 {
+        font-size: 39px;
+    }
+
+    .hero img {
+        width: 75%;
+        max-height: 220px;
+        align-self: center;
+    }
+}
+
+/* =========================================
+   15. CATÁLOGO PREMIUM NEO ZOO
+========================================= */
+
+#productos {
+    padding-top: 20px;
+}
+
+.section-head h2 {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -1.3px;
+}
+
+.section-head p {
+    font-size: 15px;
+}
+
+/* Tarjetas */
+
+.grid {
+    gap: 24px;
+}
+
+.product-card {
+    border: none;
+    border-radius: 22px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 5px 22px rgba(25, 55, 35, .06);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 38px rgba(25, 55, 35, .13);
+}
+
+/* Fotografía */
+
+.product-image {
+    height: 230px;
+    padding: 25px;
+    background: #f6f6f0;
+    position: relative;
+}
+
+.product-image img {
+    transition: transform .4s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.09);
+}
+
+/* Información */
+
+.product-info {
+    padding: 20px;
+}
+
+.category {
+    display: inline-block;
+    background: #edf3e8;
+    color: #245b40;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: .8px;
+}
+
+.product-info h3 {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 12px 0;
+    color: #26352b;
+}
+
+.price {
+    font-size: 23px;
+    color: #245b40;
+    font-weight: 900;
+    margin-bottom: 17px;
+}
+
+/* Acciones */
+
+.card-actions {
+    gap: 10px;
+}
+
+.small-btn {
+    border-radius: 999px;
+    padding: 12px 8px;
+    font-size: 12px;
+    font-weight: 800;
+    transition: all .25s ease;
+}
+
+.small-btn:not(.add):hover {
+    background: #edf3e8;
+    color: #173e2c;
+}
+
+.small-btn.add {
+    background: #245b40;
+    border-color: #245b40;
+    color: white;
+}
+
+.small-btn.add:hover {
+    background: #173e2c;
+    transform: translateY(-2px);
+}
+
+/* Buscador */
+
+.search-box input {
+    border-radius: 999px;
+    padding: 16px 22px;
+    border: 1px solid #e5e8df;
+    box-shadow: 0 4px 15px rgba(25, 55, 35, .035);
+}
+
+/* Móvil */
+
+@media (max-width: 560px) {
+    .grid {
+        gap: 13px;
+    }
+
+    .product-image {
+        height: 155px;
+        padding: 13px;
+    }
+
+    .product-info {
+        padding: 13px;
+    }
+
+    .price {
+        font-size: 18px;
+    }
+}
+
+/* =========================================
+   16. BANNER PROMOCIONAL
+========================================= */
+
+.promo-banner {
+    margin-top: 55px;
+    margin-bottom: 20px;
+    padding: 38px 45px;
+    border-radius: 24px;
+    background: linear-gradient(110deg, #f4dfc8, #faeddf);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.promo-content {
+    max-width: 560px;
+    position: relative;
+    z-index: 1;
+}
+
+.promo-content > span {
+    color: #a45c2b;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+}
+
+.promo-content h2 {
+    font-size: clamp(27px, 4vw, 39px);
+    color: #493323;
+    margin: 12px 0;
+    letter-spacing: -1px;
+}
+
+.promo-content p {
+    color: #765d4b;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+.promo-button {
+    display: inline-block;
+    margin-top: 12px;
+    background: #245b40;
+    color: white;
+    padding: 13px 23px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    transition: .25s;
+}
+
+.promo-button:hover {
+    background: #173e2c;
+    transform: translateY(-3px);
+}
+
+.promo-decoration {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 65px;
+    opacity: .85;
+    transform: rotate(-8deg);
+}
+
+.promo-decoration span:nth-child(2) {
+    font-size: 95px;
+}
+
+.promo-decoration span:nth-child(3) {
+    font-size: 65px;
+}
+
+@media (max-width: 560px) {
+    .promo-banner {
+        padding: 27px;
+    }
+
+    .promo-decoration {
+        display: none;
+    }
+}
+
+/* =========================================
+   17. CARRITO PREMIUM NEO ZOO
+========================================= */
+
+.page-title {
+    margin: 25px 0 35px;
+}
+
+.page-title h1 {
+    color: var(--green-dark);
+    font-size: clamp(34px, 4vw, 46px);
+}
+
+.page-title .description {
+    font-size: 15px;
+}
+
+/* Distribución */
+
+.cart-layout {
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, .8fr);
+    gap: 28px;
+}
+
+/* Paneles */
+
+.cart-panel,
+.summary {
+    border: 1px solid #eeede7;
+    border-radius: 22px;
+    padding: 26px;
+    box-shadow: 0 8px 28px rgba(25, 55, 35, .05);
+}
+
+.cart-panel h2,
+.summary h2 {
+    color: var(--green-dark);
+    font-size: 21px;
+}
+
+/* Productos */
+
+.cart-row {
+    grid-template-columns: 100px minmax(0, 1fr) auto;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.cart-row img {
+    width: 100px;
+    height: 100px;
+    border-radius: 15px;
+    background: #f5f5ef;
+    padding: 12px;
+}
+
+.cart-row h3 {
+    font-size: 16px;
+    color: var(--ink);
+}
+
+.cart-row p {
+    margin-top: 5px;
+    line-height: 1.5;
+}
+
+/* Cantidades */
+
+.cart-controls {
+    gap: 10px;
+}
+
+.cart-controls button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-weight: 800;
+    color: var(--green);
+}
+
+.cart-controls button:hover {
+    background: #edf3e8;
+    border-color: var(--green);
+}
+
+/* Eliminar */
+
+.remove {
+    font-size: 13px;
+    font-weight: 700;
+    color: #bd5656;
+}
+
+/* Resumen */
+
+.summary {
+    background: #f1f5ec;
+    border: 1px solid #e4ebdc;
+    position: sticky;
+    top: 105px;
+}
+
+.summary h2 {
+    margin-bottom: 20px;
+}
+
+.summary-line {
+    color: #56645a;
+    padding: 14px 0;
+    font-size: 14px;
+}
+
+.summary-line:last-of-type {
+    color: var(--green-dark);
+    font-size: 19px;
+    font-weight: 900;
+}
+
+/* Botón de compra */
+
+.summary .primary {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #245b40;
+    border-radius: 999px;
+    padding: 16px;
+    margin-top: 22px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.summary .primary:hover {
+    background: #173e2c;
+}
+
+/* Carrito vacío */
+
+.empty {
+    background: white;
+    border: 1px dashed #dce5d6;
+    border-radius: 20px;
+    padding: 65px 25px;
+}
+
+.empty h2 {
+    color: var(--green-dark);
+}
+
+/* Responsive */
+
+@media (max-width: 850px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .summary {
+        position: static;
+    }
+}
+
+@media (max-width: 560px) {
+    .cart-panel,
+    .summary {
+        padding: 17px;
+        border-radius: 17px;
+    }
+
+    .cart-row {
+        grid-template-columns: 68px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .cart-row img {
+        width: 68px;
+        height: 68px;
+    }
+
+    .cart-row > strong {
+        grid-column: 2;
+    }
+}
+
+/* =========================================
+   18. PANEL DE ADMINISTRACIÓN
+========================================= */
+
+.admin-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 24px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 35px;
+}
+
+.admin-header span {
+    color: #e99a55;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.admin-header h1 {
+    color: var(--green-dark);
+    font-size: clamp(30px, 4vw, 42px);
+    margin: 8px 0;
+}
+
+.admin-header p {
+    color: var(--muted);
+}
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 45px;
+}
+
+.admin-stat {
+    background: white;
+    padding: 25px;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+}
+
+.admin-stat span {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.admin-stat strong {
+    display: block;
+    color: var(--green);
+    font-size: 32px;
+    margin-top: 10px;
+}
+
+.admin-products {
+    background: white;
+    padding: 28px;
+    border-radius: 22px;
+    border: 1px solid var(--line);
+}
+
+.admin-section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.admin-section-title h2 {
+    color: var(--green-dark);
+}
+
+.admin-section-title input,
+.admin-form-section input,
+.admin-form-section textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font: inherit;
+    outline: none;
+}
+
+.admin-section-title input {
+    max-width: 300px;
+}
+
+.admin-section-title input:focus,
+.admin-form-section input:focus,
+.admin-form-section textarea:focus {
+    border-color: var(--green);
+}
+
+.admin-form-section {
+    background: white;
+    padding: 30px;
+    margin-top: 30px;
+    border-radius: 22px;
+    border: 1px solid var(--line);
+}
+
+.admin-form-section h2 {
+    color: var(--green-dark);
+    margin-bottom: 25px;
+}
+
+.admin-form-section form {
+    display: grid;
+    gap: 12px;
+}
+
+.admin-form-section label {
+    font-weight: 700;
+    color: var(--ink);
+    margin-top: 8px;
+}
+
+.admin-form-section textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.admin-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.admin-form-actions button {
+    padding: 13px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.admin-form-actions button[type="button"] {
+    background: #f1f2ed;
+    border: none;
+    color: var(--ink);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+    .admin-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-section-title {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-section-title input {
+        max-width: none;
+    }
+
+    .admin-products {
+        padding: 18px;
+    }
+}
+.admin-product-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.admin-product-row strong {
+    color: var(--green-dark);
+}
+
+.admin-product-row p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+@media (max-width: 500px) {
+    .admin-product-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* CARGA DE IMÁGENES */
+
+.image-drop-zone {
+    border: 2px dashed #cbd8c9;
+    border-radius: 18px;
+    padding: 30px;
+    text-align: center;
+    background: #fafcf8;
+    transition: 0.2s;
+}
+
+.image-drop-zone.drag-over {
+    border-color: var(--green);
+    background: #edf5e9;
+}
+
+.image-drop-zone .upload-icon {
+    font-size: 35px;
+}
+
+.image-drop-zone p {
+    color: var(--muted);
+    margin: 10px 0;
+}
+
+.image-drop-zone button {
+    background: var(--green);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.image-drop-zone button:hover {
+    background: var(--green-dark);
+}
+
+#image-preview {
+    display: block;
+    max-width: 220px;
+    max-height: 180px;
+    object-fit: contain;
+    margin: 20px auto 0;
+    border-radius: 12px;
+}
+
+.delete-product-btn {
+    background: #fff0f0;
+    color: #d93030;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 25px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.2s;
+    flex-shrink: 0;
+}
+
+.delete-product-btn:hover {
+    background: #d93030;
+    color: white;
+    transform: scale(1.08);
+}
+
+.admin-access {
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 9px 13px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.admin-access:hover {
+    color: var(--green);
+    border-color: var(--green);
+    background: #f3f7ef;
+}

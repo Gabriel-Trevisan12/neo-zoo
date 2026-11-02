@@ -1,45 +1,9 @@
-
-const API_URL = "https://ipickpet.com/api/v1/products";
-
-// Convierte los datos externos al formato de Neo Zoo.
-function adaptProduct(product) {
-
-    const originalName = product.title || "Producto sin nombre";
-
-    // Creamos un nombre más corto para las tarjetas.
-    const shortName = originalName
-        .replace(/dry dog food/gi, "")
-        .replace(/dry cat food/gi, "")
-        .replace(/recipe/gi, "")
-        .trim();
-
-    return {
-        id: String(product.id),
-        name: shortName,
-        originalName: originalName,
-
-        category: product.species?.includes("dog")
-            ? "Perros"
-            : product.species?.includes("cat")
-                ? "Gatos"
-                : "Otros",
-
-        // La API no proporciona precios.
-        price: null,
-
-        image: product.image?.url ?? "",
-        description: product.excerpt || originalName,
-        brand: product.brandName || "Sin marca",
-        nutrition: product.nutrition || null
-    };
-}
-
-// Obtiene los productos de la API.
+// Cargar productos desde el JSON local.
 async function getProducts() {
 
     try {
 
-        const response = await fetch(API_URL);
+        const response = await fetch("data/products.json");
 
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status}`);
@@ -47,26 +11,48 @@ async function getProducts() {
 
         const data = await response.json();
 
-        const apiProducts = Array.isArray(data)
-            ? data
-            : data.products ?? data.data ?? [];
+        if (!Array.isArray(data)) {
+            throw new Error("El catálogo no tiene un formato válido");
+        }
 
-        const adaptedProducts = apiProducts.map(adaptProduct);
+        const products = data.map(product => ({
 
-        console.log("Productos adaptados:", adaptedProducts);
-        console.log("Cantidad:", adaptedProducts.length);
-        console.log("Primer producto:", adaptedProducts[0]);
+            id: String(product.id),
 
-        return adaptedProducts;
+            name: product.name || product.nombre || "Producto sin nombre",
+
+            category: product.category || product.categoria || "Otros",
+
+            price: product.price ?? product.precio ?? null,
+
+            image: product.image || product.imagen_url || "",
+
+            description: product.description || product.descripcion || "",
+
+            brand: product.brand || product.marca || "Sin marca",
+
+            stock: product.stock ?? 0,
+
+            featured: product.featured ?? product.destacado ?? false,
+
+            pet: product.pet || product.mascota || "Otros",
+
+            sku: product.sku || ""
+
+        }));
+
+        console.log("Catálogo cargado:", products);
+        console.log("Cantidad de productos:", products.length);
+
+        return products;
 
     } catch (error) {
 
-        console.error("Error al obtener productos:", error);
+        console.error("Error al cargar el catálogo:", error);
 
         return [];
 
     }
 }
 
-// Dejamos la función disponible para app.js.
 window.getProducts = getProducts;
