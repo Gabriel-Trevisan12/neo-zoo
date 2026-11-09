@@ -2050,3 +2050,222 @@ body {
     border-color: var(--green);
     background: #f3f7ef;
 }
+
+/* =========================================
+   13. FORMULARIO DE PRODUCTOS DE PRUEBA
+========================================= */
+
+.demo {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 28px;
+    margin-top: 48px;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+}
+
+.demo-texto h2 {
+    font-size: 28px;
+    margin: 8px 0 10px;
+    letter-spacing: -.5px;
+}
+
+.demo-texto p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.demo-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 14px;
+}
+
+.demo-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.demo-form input,
+.demo-form select,
+.demo-form textarea {
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-weight: 400;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.demo-form input:focus,
+.demo-form select:focus,
+.demo-form textarea:focus {
+    outline: none;
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px #246b4515;
+}
+
+.ancho {
+    grid-column: 1 / -1;
+}
+
+.demo-botones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.demo-botones .primary {
+    margin-top: 0;
+}
+
+.secundario {
+    padding: 12px 18px;
+    border: 1px solid var(--green);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--green);
+    font-weight: 700;
+}
+
+.secundario:hover {
+    background: #e7f1df;
+}
+
+.demo-msg {
+    min-height: 20px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green);
+}
+
+@media (max-width: 850px) {
+    .demo {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .demo-form {
+        grid-template-columns: 1fr;
+    }
+
+    .demo {
+        padding: 18px;
+    }
+}
+
+/* =========================================
+   14. PANEL DE ADMINISTRACIÓN · TABLA DE PRODUCTOS
+========================================= */
+
+.admin-table-head,
+.admin-row {
+    display: grid;
+grid-template-columns: 2.4fr 1fr .6fr .9fr 190px;
+    gap: 14px;
+    align-items: center;
+}
+
+.admin-table-head {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.admin-row {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+}
+
+.admin-row small {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.admin-row .sin-stock {
+    color: #a33;
+    font-weight: 700;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.admin-actions button {
+    padding: 7px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.admin-actions .editar {
+    border-color: var(--green);
+    color: var(--green);
+}
+
+.admin-actions .editar:hover {
+    background: var(--green);
+    color: #fff;
+}
+
+.admin-actions .eliminar {
+    color: #a33;
+}
+
+.admin-tools {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.admin-tools .primary {
+    margin-top: 0;
+}
+
+/* Centrado de Código, Stock y Precio */
+.admin-table-head span:nth-child(2),
+.admin-table-head span:nth-child(3),
+.admin-table-head span:nth-child(4),
+.admin-row .col-codigo,
+.admin-row .col-stock,
+.admin-row .col-precio {
+    text-align: center;
+    justify-self: center;
+}
+
+@media (max-width: 720px) {
+    .admin-table-head {
+        display: none;
+    }
+
+    .admin-row {
+        grid-template-columns: 1fr auto;
+    }
+
+    .admin-row .col-codigo,
+    .admin-row .col-stock,
+    .admin-row .col-precio {
+        display: none;
+    }
+}

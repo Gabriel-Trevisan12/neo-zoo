@@ -170,7 +170,48 @@
             </div>
 
         </section>
+            <!-- Prueba para el entrevistador -->
+    <section class="demo" id="demo">
+        <div class="demo-texto">
+            <span class="eyebrow">Probá la tienda</span>
+            <h2>Creá un producto de prueba</h2>
+            <p>Lo que cargues aparece en el catálogo solo en tu navegador. Se borra al cerrar la pestaña y no se guarda en ningún servidor.</p>
+        </div>
 
+        <form id="form-demo" class="demo-form">
+            <label>Nombre
+                <input name="nombre" required maxlength="60" placeholder="Ej: Juguete de soga">
+            </label>
+
+            <label>Categoría
+                <select name="categoria">
+                    <option>Perros</option>
+                    <option>Gatos</option>
+                    <option>Accesorios</option>
+                    <option>Otros</option>
+                </select>
+            </label>
+
+            <label>Precio (opcional)
+                <input name="precio" type="number" min="0" step="1" placeholder="Ej: 5000">
+            </label>
+
+            <label class="ancho">Descripción (opcional)
+                <textarea name="descripcion" rows="2" maxlength="160" placeholder="Una frase corta"></textarea>
+            </label>
+
+            <label class="ancho">Foto (opcional)
+                <input name="foto" type="file" accept="image/*">
+            </label>
+
+            <div class="demo-botones ancho">
+                <button class="primary" type="submit">Crear producto</button>
+                <button class="secundario" type="button" id="borrar-demo">Borrar mis productos</button>
+            </div>
+
+            <p class="demo-msg ancho" id="demo-msg" role="status"></p>
+        </form>
+    </section>
     </main>
 
 

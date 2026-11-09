@@ -1,16 +1,22 @@
+/* =========================================
+   NEO ZOO · admin.js (panel de administración)
 
-const STORAGE_KEY = "neozoo-products";
+   Usa PRODUCTOS, getBaseProducts(), CATALOGO_KEY y getImageUrl()
+   de js/app.js, que tiene que cargarse antes que este archivo.
+========================================= */
 
-let adminProducts = [];
+let catalogo = [];
+let editingId = null;
 let selectedImageData = "";
 
 const productList = document.getElementById("admin-product-list");
+const adminSearch = document.getElementById("admin-search");
 const newProductBtn = document.getElementById("new-product-btn");
+const restoreBtn = document.getElementById("restore-btn");
 const formSection = document.getElementById("product-form-section");
+const formTitle = document.getElementById("form-title");
 const productForm = document.getElementById("product-form");
 const cancelFormBtn = document.getElementById("cancel-form");
-
-const adminSearch = document.getElementById("admin-search");
 
 const imageInput = document.getElementById("product-image");
 const dropZone = document.getElementById("image-drop-zone");
@@ -19,198 +25,136 @@ const imagePreview = document.getElementById("image-preview");
 const imageFileName = document.getElementById("image-file-name");
 
 
-// 1. Cargar productos guardados o el catálogo original
+/* 1. Datos */
 
-async function loadAdminProducts() {
+// Escapa texto para mostrarlo dentro del HTML
+function esc(texto) {
+    return String(texto ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[c]);
+}
+
+// Código visible del producto (si no tiene, se genera a partir del id)
+function codigoDe(producto) {
+    return producto.sku || "NZ-" + String(producto.id).padStart(3, "0");
+}
+
+// Próximo id numérico disponible
+function siguienteId() {
+    const mayor = Math.max(0, ...catalogo.map((p) => Number(p.id) || 0));
+    return String(mayor + 1);
+}
+
+function cargarCatalogo() {
+    catalogo = getBaseProducts().map((p) => ({ ...p }));
+}
+
+function guardarCatalogo() {
     try {
-        const savedProducts = localStorage.getItem(STORAGE_KEY);
-
-        if (savedProducts !== null) {
-            adminProducts = JSON.parse(savedProducts);
-        } else {
-            const response = await fetch("data/products.json");
-
-            if (!response.ok) {
-                throw new Error("No se pudo cargar el catálogo");
-            }
-
-            adminProducts = await response.json();
-            saveProducts();
-        }
-
-        renderAdminProducts();
-        updateAdminStats();
-
-    } catch (error) {
-        console.error(error);
-        productList.textContent = "Error al cargar los productos.";
+        localStorage.setItem(CATALOGO_KEY, JSON.stringify(catalogo));
+        return true;
+    } catch {
+        alert("No se pudo guardar en este navegador.");
+        return false;
     }
 }
 
 
-// 2. Guardar productos en el navegador
+/* 2. Tabla y estadísticas */
 
-function saveProducts() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(adminProducts));
-}
+function renderTabla() {
+    const texto = adminSearch.value.trim().toLowerCase();
 
+    const lista = catalogo.filter((p) =>
+        `${p.name} ${p.sku || ""} ${p.category || ""} ${p.brand || ""}`
+            .toLowerCase()
+            .includes(texto)
+    );
 
-// 3. Mostrar productos y aplicar el buscador
-
-function renderAdminProducts() {
-    productList.innerHTML = "";
-
-    const searchText = adminSearch.value.trim().toLowerCase();
-
-    const filteredProducts = adminProducts.filter(product => {
-        const searchableText = `
-            ${product.name || ""}
-            ${product.category || ""}
-            ${product.brand || ""}
-        `.toLowerCase();
-
-        return searchableText.includes(searchText);
-    });
-
-    if (filteredProducts.length === 0) {
-        productList.textContent = "No se encontraron productos.";
+    if (lista.length === 0) {
+        productList.innerHTML = `<p class="admin-vacio">No se encontraron productos.</p>`;
         return;
     }
 
-    filteredProducts.forEach(product => {
-        const article = document.createElement("article");
-        article.className = "admin-product-row";
+    productList.innerHTML = lista.map((p) => {
+        const stock = Number(p.stock) || 0;
 
-        article.innerHTML = `
-            <div>
-                <strong>${product.name || "Sin nombre"}</strong>
-                <p>${product.category || "Sin categoría"}</p>
-            </div>
+        return `
+            <article class="admin-row">
+                <div>
+                    <strong>${esc(p.name)}</strong>
+                    <small>${esc(p.category)} · ${esc(p.brand || "Sin marca")}</small>
+                </div>
 
-            <div>
-                <strong>$${Number(product.price || 0).toLocaleString("es-AR")}</strong>
-            </div>
+                <span class="col-codigo">${esc(codigoDe(p))}</span>
 
-            <button
-                type="button"
-                class="delete-product-btn"
-                data-id="${product.id}"
-                title="Eliminar producto"
-                aria-label="Eliminar ${product.name || "producto"}"
-            >×</button>
-        `;
+                <span class="col-stock ${stock <= 0 ? "sin-stock" : ""}">
+                    ${stock <= 0 ? "Sin stock" : stock}
+                </span>
 
-        productList.appendChild(article);
-    });
+                <span class="col-precio">${p.price == null ? "A definir" : "$" + Number(p.price).toLocaleString("es-AR")}</span>
+
+                <div class="admin-actions">
+                    <button type="button" class="editar" data-edit="${esc(p.id)}">Editar</button>
+                    <button type="button" class="eliminar" data-delete="${esc(p.id)}">Eliminar</button>
+                </div>
+            </article>`;
+    }).join("");
 }
 
-
-// 4. Actualizar estadísticas
-
-function updateAdminStats() {
-    document.getElementById("total-products").textContent =
-        adminProducts.length;
-
+function actualizarStats() {
+    document.getElementById("total-products").textContent = catalogo.length;
     document.getElementById("available-products").textContent =
-        adminProducts.filter(product => Number(product.stock) > 0).length;
-
+        catalogo.filter((p) => Number(p.stock) > 0).length;
     document.getElementById("out-of-stock").textContent =
-        adminProducts.filter(product => Number(product.stock) <= 0).length;
+        catalogo.filter((p) => Number(p.stock) <= 0).length;
+}
+
+function refrescar() {
+    renderTabla();
+    actualizarStats();
 }
 
 
-// 5. Buscador en tiempo real
+/* 3. Formulario (agregar y editar) */
 
-adminSearch.addEventListener("input", () => {
-    renderAdminProducts();
-});
+function mostrarImagenActual(src) {
+    imagePreview.src = src;
+    imagePreview.hidden = !src;
+}
 
-
-// 6. Eliminar productos
-
-productList.addEventListener("click", (event) => {
-    const deleteButton = event.target.closest(".delete-product-btn");
-
-    if (!deleteButton) return;
-
-    const productId = deleteButton.dataset.id;
-
-    const product = adminProducts.find(item =>
-        String(item.id) === String(productId)
-    );
-
-    if (!product) return;
-
-    const confirmation = confirm(
-        `¿Seguro que querés eliminar "${product.name}"?`
-    );
-
-    if (!confirmation) return;
-
-    adminProducts = adminProducts.filter(item =>
-        String(item.id) !== String(productId)
-    );
-
-    saveProducts();
-    renderAdminProducts();
-    updateAdminStats();
-});
-
-
-// 7. Abrir y cerrar el formulario
-
-newProductBtn.addEventListener("click", () => {
+function abrirFormulario(producto = null) {
     productForm.reset();
+    editingId = producto ? String(producto.id) : null;
     selectedImageData = "";
 
-    imagePreview.src = "";
-    imagePreview.hidden = true;
-    imageFileName.textContent = "";
+    if (producto) {
+        document.getElementById("product-name").value = producto.name || "";
+        document.getElementById("product-sku").value = producto.sku || codigoDe(producto);
+        document.getElementById("product-brand").value = producto.brand || "";
+        document.getElementById("product-category").value = producto.category || "";
+        document.getElementById("product-price").value = producto.price ?? "";
+        document.getElementById("product-stock").value = producto.stock ?? 0;
+        document.getElementById("product-description").value = producto.description || "";
+        mostrarImagenActual(getImageUrl(producto.image));
+        imageFileName.textContent = producto.image && !producto.image.startsWith("data:") ? producto.image : "";
+        formTitle.textContent = "Editar producto";
+    } else {
+        mostrarImagenActual("");
+        imageFileName.textContent = "";
+        formTitle.textContent = "Agregar producto";
+    }
 
     formSection.hidden = false;
-    document.getElementById("form-title").textContent = "Agregar producto";
-
     formSection.scrollIntoView({ behavior: "smooth" });
-});
+}
 
-cancelFormBtn.addEventListener("click", () => {
+function cerrarFormulario() {
     formSection.hidden = true;
-});
+    editingId = null;
+}
 
-
-// 8. Seleccionar o arrastrar imágenes
-
-selectImageBtn.addEventListener("click", () => {
-    imageInput.click();
-});
-
-imageInput.addEventListener("change", () => {
-    if (imageInput.files.length > 0) {
-        handleImage(imageInput.files[0]);
-    }
-});
-
-dropZone.addEventListener("dragover", (event) => {
-    event.preventDefault();
-    dropZone.classList.add("drag-over");
-});
-
-dropZone.addEventListener("dragleave", () => {
-    dropZone.classList.remove("drag-over");
-});
-
-dropZone.addEventListener("drop", (event) => {
-    event.preventDefault();
-    dropZone.classList.remove("drag-over");
-
-    const file = event.dataTransfer.files[0];
-
-    if (file) {
-        handleImage(file);
-    }
-});
-
-function handleImage(file) {
+function leerImagen(file) {
     if (!file.type.startsWith("image/")) {
         alert("Seleccioná un archivo de imagen.");
         return;
@@ -225,10 +169,7 @@ function handleImage(file) {
 
     reader.onload = () => {
         selectedImageData = reader.result;
-
-        imagePreview.src = selectedImageData;
-        imagePreview.hidden = false;
-
+        mostrarImagenActual(selectedImageData);
         imageFileName.textContent = file.name;
     };
 
@@ -236,42 +177,111 @@ function handleImage(file) {
 }
 
 
-// 9. Agregar productos
+/* 4. Eventos */
 
-productForm.addEventListener("submit", (event) => {
-    event.preventDefault();
+adminSearch.addEventListener("input", renderTabla);
 
-    const newProduct = {
-        id: String(Date.now()),
+newProductBtn.addEventListener("click", () => abrirFormulario());
+
+cancelFormBtn.addEventListener("click", cerrarFormulario);
+
+// Botones Editar y Eliminar de cada fila
+productList.addEventListener("click", (e) => {
+    const editar = e.target.closest("[data-edit]");
+    const eliminar = e.target.closest("[data-delete]");
+
+    if (editar) {
+        const producto = catalogo.find((p) => String(p.id) === editar.dataset.edit);
+        if (producto) abrirFormulario(producto);
+        return;
+    }
+
+    if (eliminar) {
+        const producto = catalogo.find((p) => String(p.id) === eliminar.dataset.delete);
+        if (!producto) return;
+
+        if (!confirm(`¿Seguro que querés eliminar "${producto.name}"?`)) return;
+
+        catalogo = catalogo.filter((p) => String(p.id) !== String(producto.id));
+        guardarCatalogo();
+        refrescar();
+
+        if (editingId === String(producto.id)) cerrarFormulario();
+    }
+});
+
+// Volver al catálogo original (el de app.js)
+restoreBtn.addEventListener("click", () => {
+    if (!confirm("¿Restaurar el catálogo original? Se pierden los cambios hechos en este navegador.")) return;
+
+    localStorage.removeItem(CATALOGO_KEY);
+    cargarCatalogo();
+    refrescar();
+    cerrarFormulario();
+});
+
+// Imagen: botón o arrastrar y soltar
+selectImageBtn.addEventListener("click", () => imageInput.click());
+
+imageInput.addEventListener("change", () => {
+    if (imageInput.files.length > 0) leerImagen(imageInput.files[0]);
+});
+
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("drag-over");
+});
+
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag-over"));
+
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("drag-over");
+    if (e.dataTransfer.files[0]) leerImagen(e.dataTransfer.files[0]);
+});
+
+// Guardar: crea uno nuevo o actualiza el que se está editando
+productForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const codigo = document.getElementById("product-sku").value.trim();
+
+    const repetido = catalogo.some((p) =>
+        String(p.id) !== editingId && codigo && (p.sku || "") === codigo
+    );
+
+    if (repetido) {
+        alert("Ya existe un producto con ese código.");
+        return;
+    }
+
+    const existente = editingId ? catalogo.find((p) => String(p.id) === editingId) : null;
+
+    const datos = {
         name: document.getElementById("product-name").value.trim(),
-        brand: document.getElementById("product-brand").value.trim(),
+        sku: codigo,
+        brand: document.getElementById("product-brand").value.trim() || "Sin marca",
         category: document.getElementById("product-category").value.trim(),
-        pet: document.getElementById("product-pet").value.trim(),
         price: Number(document.getElementById("product-price").value),
         stock: Number(document.getElementById("product-stock").value),
-        image: selectedImageData,
+        image: selectedImageData || (existente ? existente.image : ""),
         description: document.getElementById("product-description").value.trim()
     };
 
-    adminProducts.push(newProduct);
+    if (existente) {
+        Object.assign(existente, datos);
+    } else {
+        catalogo.push({ id: siguienteId(), ...datos });
+    }
 
-    saveProducts();
-    renderAdminProducts();
-    updateAdminStats();
+    if (!guardarCatalogo()) return;
 
-    productForm.reset();
-
-    selectedImageData = "";
-    imagePreview.src = "";
-    imagePreview.hidden = true;
-    imageFileName.textContent = "";
-
-    formSection.hidden = true;
-
-    alert("¡Producto agregado correctamente!");
+    refrescar();
+    cerrarFormulario();
 });
 
 
-// Iniciar administrador
+/* 5. Inicio */
 
-loadAdminProducts();
+cargarCatalogo();
+refrescar();

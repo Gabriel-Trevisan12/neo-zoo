@@ -1,129 +1,145 @@
+Claude
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Admin · HTML
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administración | Neo Zoo</title>
     <link rel="stylesheet" href="css/styles.css">
+    <title>Administración | Neo Zoo</title>
 </head>
 <body>
-
+ 
     <header class="topbar">
         <p>🐾 Neo Zoo | Administración</p>
         <a href="index.html">Volver a la tienda</a>
     </header>
-
+ 
     <main class="admin-container">
-
+ 
         <section class="admin-header">
             <div>
                 <span>GESTIÓN DE LA TIENDA</span>
                 <h1>Panel de administración</h1>
-                <p>Administrá los productos de Neo Zoo.</p>
+                <p>Administrá los productos de Neo Zoo. Los cambios se ven en la tienda de este navegador.</p>
             </div>
-
-            <button id="new-product-btn" class="primary">
-                + Agregar producto
-            </button>
+ 
+            <div class="admin-tools">
+                <button id="restore-btn" type="button">Restaurar catálogo original</button>
+                <button id="new-product-btn" class="primary" type="button">+ Agregar producto</button>
+            </div>
         </section>
-
+ 
         <section class="admin-stats">
             <article class="admin-stat">
                 <span>Total de productos</span>
                 <strong id="total-products">0</strong>
             </article>
-
+ 
             <article class="admin-stat">
                 <span>Productos disponibles</span>
                 <strong id="available-products">0</strong>
             </article>
-
+ 
             <article class="admin-stat">
                 <span>Sin stock</span>
                 <strong id="out-of-stock">0</strong>
             </article>
         </section>
-
+ 
         <section class="admin-products">
             <div class="admin-section-title">
                 <h2>Productos</h2>
-                <input
-                    type="search"
-                    id="admin-search"
-                    placeholder="Buscar producto..."
-                >
+                <input type="search" id="admin-search" placeholder="Buscar por nombre, código o categoría...">
             </div>
-
-            <div id="admin-product-list">
-                <!-- Los productos se cargarán con JavaScript -->
+ 
+            <div class="admin-table-head">
+                <span>Nombre</span>
+                <span>Código</span>
+                <span>Stock</span>
+                <span>Precio</span>
+                <span></span>
             </div>
+ 
+            <div id="admin-product-list"></div>
         </section>
-
+ 
         <section id="product-form-section" class="admin-form-section" hidden>
             <h2 id="form-title">Agregar producto</h2>
-
+ 
             <form id="product-form">
-
-                <label for="product-name">Nombre del producto</label>
+ 
+                <label for="product-name">Nombre</label>
                 <input type="text" id="product-name" required>
-
+ 
+                <label for="product-sku">Código</label>
+                <input type="text" id="product-sku" placeholder="Ej: NZ-017 (si lo dejás vacío se genera solo)">
+ 
                 <label for="product-brand">Marca</label>
                 <input type="text" id="product-brand">
-
+ 
                 <label for="product-category">Categoría</label>
-                <input type="text" id="product-category" required>
-
-                <label for="product-pet">Mascota</label>
-                <input type="text" id="product-pet">
-
+                <input type="text" id="product-category" required placeholder="Perros, Gatos o Accesorios">
+ 
                 <label for="product-price">Precio</label>
                 <input type="number" id="product-price" min="0" required>
-
+ 
                 <label for="product-stock">Stock</label>
                 <input type="number" id="product-stock" min="0" required>
-
-                
+ 
                 <label>Imagen del producto</label>
-
+ 
                 <div id="image-drop-zone" class="image-drop-zone">
                     <span class="upload-icon">📷</span>
                     <p>Arrastrá y soltá una imagen aquí</p>
                     <span>o</span>
-
-                    <button type="button" id="select-image-btn">
-                        Seleccionar imagen
-                    </button>
-
-                    <input
-                        type="file"
-                        id="product-image"
-                        accept="image/*"
-                        hidden
-                    >
-
+ 
+                    <button type="button" id="select-image-btn">Seleccionar imagen</button>
+ 
+                    <input type="file" id="product-image" accept="image/*" hidden>
+ 
                     <img id="image-preview" alt="Vista previa del producto" hidden>
                     <p id="image-file-name"></p>
                 </div>
-
-
+ 
                 <label for="product-description">Descripción</label>
                 <textarea id="product-description"></textarea>
-
+ 
                 <div class="admin-form-actions">
-                    <button type="submit" class="primary">
-                        Guardar producto
-                    </button>
-
-                    <button type="button" id="cancel-form">
-                        Cancelar
-                    </button>
+                    <button type="submit" class="primary">Guardar producto</button>
+                    <button type="button" id="cancel-form">Cancelar</button>
                 </div>
-
+ 
             </form>
         </section>
-
+ 
     </main>
-<script src="js/admin.js"></script>
+ 
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
 </body>
 </html>
+ 
