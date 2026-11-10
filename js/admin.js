@@ -160,20 +160,17 @@ function leerImagen(file) {
         return;
     }
 
-    if (file.size > 1024 * 1024) {
-        alert("La imagen no puede superar 1 MB.");
-        return;
-    }
+    // leerFoto() viene de app.js: reduce la imagen antes de guardarla
+    leerFoto(file).then((data) => {
+        if (!data) {
+            alert("No se pudo leer la imagen.");
+            return;
+        }
 
-    const reader = new FileReader();
-
-    reader.onload = () => {
-        selectedImageData = reader.result;
-        mostrarImagenActual(selectedImageData);
+        selectedImageData = data;
+        mostrarImagenActual(data);
         imageFileName.textContent = file.name;
-    };
-
-    reader.readAsDataURL(file);
+    });
 }
 
 

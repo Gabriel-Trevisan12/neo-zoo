@@ -1495,91 +1495,7 @@ body {
     }
 }
 
-/* =========================================
-   16. BANNER PROMOCIONAL
-========================================= */
-
-.promo-banner {
-    margin-top: 55px;
-    margin-bottom: 20px;
-    padding: 38px 45px;
-    border-radius: 24px;
-    background: linear-gradient(110deg, #f4dfc8, #faeddf);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    overflow: hidden;
-    position: relative;
-}
-
-.promo-content {
-    max-width: 560px;
-    position: relative;
-    z-index: 1;
-}
-
-.promo-content > span {
-    color: #a45c2b;
-    font-size: 11px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-}
-
-.promo-content h2 {
-    font-size: clamp(27px, 4vw, 39px);
-    color: #493323;
-    margin: 12px 0;
-    letter-spacing: -1px;
-}
-
-.promo-content p {
-    color: #765d4b;
-    line-height: 1.7;
-    font-size: 14px;
-}
-
-.promo-button {
-    display: inline-block;
-    margin-top: 12px;
-    background: #245b40;
-    color: white;
-    padding: 13px 23px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 800;
-    transition: .25s;
-}
-
-.promo-button:hover {
-    background: #173e2c;
-    transform: translateY(-3px);
-}
-
-.promo-decoration {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 65px;
-    opacity: .85;
-    transform: rotate(-8deg);
-}
-
-.promo-decoration span:nth-child(2) {
-    font-size: 95px;
-}
-
-.promo-decoration span:nth-child(3) {
-    font-size: 65px;
-}
-
 @media (max-width: 560px) {
-    .promo-banner {
-        padding: 27px;
-    }
-
-    .promo-decoration {
-        display: none;
-    }
 }
 
 /* =========================================
@@ -1941,30 +1857,8 @@ body {
         padding: 18px;
     }
 }
-.admin-product-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--line);
-}
-
-.admin-product-row strong {
-    color: var(--green-dark);
-}
-
-.admin-product-row p {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 5px;
-}
 
 @media (max-width: 500px) {
-    .admin-product-row {
-        align-items: flex-start;
-        flex-direction: column;
-    }
 }
 
 /* CARGA DE IMÁGENES */
@@ -2013,27 +1907,6 @@ body {
     object-fit: contain;
     margin: 20px auto 0;
     border-radius: 12px;
-}
-
-.delete-product-btn {
-    background: #fff0f0;
-    color: #d93030;
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
-    font-size: 25px;
-    font-weight: bold;
-    line-height: 1;
-    cursor: pointer;
-    transition: 0.2s;
-    flex-shrink: 0;
-}
-
-.delete-product-btn:hover {
-    background: #d93030;
-    color: white;
-    transform: scale(1.08);
 }
 
 .admin-access {
@@ -2269,3 +2142,15 @@ grid-template-columns: 2.4fr 1fr .6fr .9fr 190px;
         display: none;
     }
 }
+
+/* Botón secundario del panel de administración */
+.admin-tools button:not(.primary) {
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--blanco);
+  color: var(--verde);
+  font-weight: 700;
+  font-size: 14px;
+}
+.admin-tools button:not(.primary):hover { border-color: var(--verde); }
